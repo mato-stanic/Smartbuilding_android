@@ -48,7 +48,8 @@
         android:text="@string/action1"
         android:id="@+id/radioButton"
         android:layout_alignTop="@+id/tvAction"
-        android:layout_toEndOf="@+id/tvRoom" />
+        android:layout_toEndOf="@+id/tvRoom"
+        android:onClick="rbClick"/>
 
     <RadioButton
         android:layout_width="wrap_content"
@@ -56,7 +57,8 @@
         android:text="@string/action2"
         android:id="@+id/radioButton2"
         android:layout_alignTop="@+id/radioButton"
-        android:layout_toEndOf="@+id/radioButton" />
+        android:layout_toEndOf="@+id/radioButton"
+        android:onClick="rbClick"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -67,4 +69,103 @@
         android:layout_below="@+id/tvAction"
         android:layout_marginTop="40dp"
         android:layout_alignParentStart="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/monday"
+        android:id="@+id/checkBox"
+        android:layout_alignTop="@+id/tvDays"
+        android:layout_toStartOf="@+id/radioButton2" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tuesday"
+        android:id="@+id/checkBox2"
+        android:layout_below="@+id/checkBox"
+        android:layout_alignStart="@+id/checkBox" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/wednesday"
+        android:id="@+id/checkBox3"
+        android:layout_below="@+id/checkBox2"
+        android:layout_alignStart="@+id/checkBox2" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/thursday"
+        android:id="@+id/checkBox4"
+        android:layout_below="@+id/checkBox3"
+        android:layout_alignStart="@+id/checkBox3" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/friday"
+        android:id="@+id/checkBox5"
+        android:layout_alignTop="@+id/checkBox"
+        android:layout_alignEnd="@+id/radioButton2" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/saturday"
+        android:id="@+id/checkBox6"
+        android:layout_below="@+id/checkBox5"
+        android:layout_alignStart="@+id/checkBox5" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sunday"
+        android:id="@+id/checkBox7"
+        android:layout_below="@+id/checkBox6"
+        android:layout_alignStart="@+id/checkBox6" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/time"
+        android:id="@+id/tvTime"
+        android:layout_below="@+id/checkBox4"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="40dp"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etHours"
+        android:layout_alignBottom="@+id/tvTime"
+        android:layout_toRightOf="@+id/tvTime"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="40dp"
+        android:width="40dp"
+        android:inputType="numberSigned"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text=":"
+        android:id="@+id/tvSpace"
+        android:layout_alignBottom="@+id/etHours"
+        android:layout_toRightOf="@+id/etHours"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/etMinutes"
+        android:layout_alignBottom="@+id/tvTime"
+        android:layout_toRightOf="@+id/tvSpace"
+        android:layout_centerHorizontal="true"
+        android:width="40dp"
+        android:inputType="numberSigned"
+        />
+
+
 </RelativeLayout>

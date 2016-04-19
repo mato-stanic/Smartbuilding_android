@@ -44,6 +44,14 @@
         <item>Hodnik</item>
     </string-array>
 
+    <string name="monday">Ponedjeljak</string>
+    <string name="tuesday">Utorak</string>
+    <string name="wednesday">Srijeda</string>
+    <string name="thursday">Četvrtak</string>
+    <string name="friday">Petak</string>
+    <string name="saturday">Subota</string>
+    <string name="sunday">Nedjelja</string>
+
     <string name="action_settings">Settings</string>
     <string name="title_activity_advanced_layout">Napredno upravljanje</string>
 </resources>
