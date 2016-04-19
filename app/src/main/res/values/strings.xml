@@ -27,5 +27,23 @@
     <string name="preference_file_key">loggedInUser</string>
     <string name="preferenceUserData">preferenceUserData</string>
 
+    <!--stuff for advanced layout-->
+    <string name="room">Prostorija</string>
+    <string name="action">Akcija</string>
+    <string name="action1">Upali svjetlo</string>
+    <string name="action2">Ugasi svjetlo</string>
+    <string name="day">Dan</string>
+    <string name="time">Vrijeme</string>
+    <string name="save">Spremi</string>
+
+    <string-array name="rooms_array">
+        <item>Dnevna soba</item>
+        <item>Kuhinja</item>
+        <item>Kupaonica</item>
+        <item>Spavaća soba</item>
+        <item>Hodnik</item>
+    </string-array>
+
     <string name="action_settings">Settings</string>
+    <string name="title_activity_advanced_layout">Napredno upravljanje</string>
 </resources>

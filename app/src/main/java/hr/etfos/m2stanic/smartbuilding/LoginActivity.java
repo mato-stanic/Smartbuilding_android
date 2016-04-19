@@ -19,7 +19,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -33,10 +32,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         loggedInUser = (sharedPref.getBoolean(PXS_RXS_UPDATE, false));
 
         if(loggedInUser){
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            Intent intent = new Intent(getApplicationContext(), SimpleLayoutActivity.class);
             startActivity(intent);
         }
         else{
@@ -273,7 +270,7 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString("loggedInUser", loginSuccessful);
                 editor.commit();
 
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SimpleLayoutActivity.class);
                 startActivity(intent);
 //                Toast.makeText(getApplicationContext(), loginSuccessful, Toast.LENGTH_LONG).show();
             } else {

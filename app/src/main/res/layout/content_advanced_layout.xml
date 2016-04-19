@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="hr.etfos.m2stanic.smartbuilding.AdvancedLayoutActivity"
+    tools:showIn="@layout/app_bar_advanced_layout">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/room"
+        android:id="@+id/tvRoom"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="40dp" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_alignBottom="@+id/tvRoom"
+        android:layout_marginLeft="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/tvRoom"
+        android:entries="@array/rooms_array"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/action"
+        android:id="@+id/tvAction"
+        android:layout_below="@+id/tvRoom"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentStart="true" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action1"
+        android:id="@+id/radioButton"
+        android:layout_alignTop="@+id/tvAction"
+        android:layout_toEndOf="@+id/tvRoom" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action2"
+        android:id="@+id/radioButton2"
+        android:layout_alignTop="@+id/radioButton"
+        android:layout_toEndOf="@+id/radioButton" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/day"
+        android:id="@+id/tvDays"
+        android:layout_below="@+id/tvAction"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

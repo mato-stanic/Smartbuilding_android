@@ -110,7 +110,7 @@ public class ApartmentLayout {
             else {
                 Toast.makeText(context, "Nažalost dogodila se greška", Toast.LENGTH_LONG).show();
                 sw.toggle();
-//                Intent intent = new Intent(context, MainActivity.class);
+//                Intent intent = new Intent(context, SimpleLayoutActivity.class);
 //                context.startActivity(intent);
 
             }
