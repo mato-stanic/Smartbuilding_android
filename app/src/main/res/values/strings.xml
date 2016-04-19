@@ -15,6 +15,7 @@
         completions."
     </string>
     <string name="title_activity_main">Jednostavno upravljanje</string>
+    <string name="error">Nažalost dogodila se greška, molim vas pokušajte kasnije.</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

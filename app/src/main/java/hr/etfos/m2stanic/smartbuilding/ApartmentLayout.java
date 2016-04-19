@@ -3,6 +3,7 @@ package hr.etfos.m2stanic.smartbuilding;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
@@ -28,12 +29,12 @@ import java.util.List;
 public class ApartmentLayout {
 
     private ApartmentLayoutEdit apartmentLayoutEdit = null;
-    public static void changeRoomState(Context context, Long apartmentId, String roomToChange, boolean state){
-        new ApartmentLayout().startAsyncTask(context, apartmentId, roomToChange, state);
+    public static void changeRoomState(Switch sw, Context context, Long apartmentId, String roomToChange, boolean state){
+        new ApartmentLayout().startAsyncTask(sw, context, apartmentId, roomToChange, state);
     }
 
-    public void startAsyncTask(Context context, Long apartmentId, String roomToChange, boolean state){
-        apartmentLayoutEdit = new ApartmentLayoutEdit(context, apartmentId, roomToChange, state);
+    public void startAsyncTask(Switch sw, Context context, Long apartmentId, String roomToChange, boolean state){
+        apartmentLayoutEdit = new ApartmentLayoutEdit(sw, context, apartmentId, roomToChange, state);
         apartmentLayoutEdit.execute((Void) null);
     }
 
@@ -43,10 +44,12 @@ public class ApartmentLayout {
         private final String roomToChange;
         private final Boolean state;
         private final Context context;
+        private final Switch sw;
         private String apartmentLayout;
         private Integer statusCode;
 
-        ApartmentLayoutEdit(Context context, Long apartmentId, String roomToChange, Boolean state) {
+        ApartmentLayoutEdit(Switch sw, Context context, Long apartmentId, String roomToChange, Boolean state) {
+            this.sw = sw;
             this.context = context;
             this.apartmentId = apartmentId;
             this.roomToChange = roomToChange;
@@ -85,10 +88,13 @@ public class ApartmentLayout {
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
+                return false;
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
+                return false;
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
             }
             return true;
         }
@@ -103,8 +109,9 @@ public class ApartmentLayout {
             }
             else {
                 Toast.makeText(context, "Nažalost dogodila se greška", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(context, MainActivity.class);
-                context.startActivity(intent);
+                sw.toggle();
+//                Intent intent = new Intent(context, MainActivity.class);
+//                context.startActivity(intent);
 
             }
         }

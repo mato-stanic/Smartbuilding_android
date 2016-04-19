@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
@@ -33,6 +34,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     private Switch bedroom;
     private Switch hallway;
     private Long apartmentId;
+    private TextView textViewError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,8 @@ public class MainActivity extends AppCompatActivity
         bathroom = (Switch) findViewById(R.id.switch3);
         bedroom = (Switch) findViewById(R.id.switch4);
         hallway = (Switch) findViewById(R.id.switch5);
+        textViewError = (TextView) findViewById(R.id.textViewError);
+        textViewError.setVisibility(View.GONE);
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferenceUserData), Context.MODE_PRIVATE);
         String loggedInUser = sharedPref.getString("loggedInUser", "noData");
@@ -127,7 +132,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_simple) {
-            // Handle the camera action
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_advanced) {
 
         } else if (id == R.id.nav_cron_list) {
@@ -143,11 +149,11 @@ public class MainActivity extends AppCompatActivity
         int id = v.getId();
         Switch sw = (Switch) findViewById(id);
         switch (id){
-            case R.id.switch1: ApartmentLayout.changeRoomState(getApplicationContext(), apartmentId, "living_room", sw.isChecked());break;
-            case R.id.switch2: ApartmentLayout.changeRoomState(getApplicationContext(), apartmentId, "kitchen", sw.isChecked());break;
-            case R.id.switch3: ApartmentLayout.changeRoomState(getApplicationContext(), apartmentId, "bathroom", sw.isChecked());break;
-            case R.id.switch4: ApartmentLayout.changeRoomState(getApplicationContext(), apartmentId, "bedroom", sw.isChecked());break;
-            case R.id.switch5: ApartmentLayout.changeRoomState(getApplicationContext(), apartmentId, "hallway", sw.isChecked());break;
+            case R.id.switch1: ApartmentLayout.changeRoomState(sw, getApplicationContext(), apartmentId, "living_room", sw.isChecked());break;
+            case R.id.switch2: ApartmentLayout.changeRoomState(sw, getApplicationContext(), apartmentId, "kitchen", sw.isChecked());break;
+            case R.id.switch3: ApartmentLayout.changeRoomState(sw, getApplicationContext(), apartmentId, "bathroom", sw.isChecked());break;
+            case R.id.switch4: ApartmentLayout.changeRoomState(sw, getApplicationContext(), apartmentId, "bedroom", sw.isChecked());break;
+            case R.id.switch5: ApartmentLayout.changeRoomState(sw, getApplicationContext(), apartmentId, "hallway", sw.isChecked());break;
         }
     }
 
@@ -173,6 +179,7 @@ public class MainActivity extends AppCompatActivity
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                return false;
             }
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout");
@@ -193,7 +200,7 @@ public class MainActivity extends AppCompatActivity
                     HttpEntity entity = response.getEntity();
                     InputStream is = entity.getContent();
                     apartmentLayout = ParseResponse.iStream_to_String(is);
-
+                    return true;
                 }
                 else{
                     return false;
@@ -201,12 +208,14 @@ public class MainActivity extends AppCompatActivity
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
+                return false;
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
+                return false;
             } catch (IOException e) {
                 e.printStackTrace();
+                return false;
             }
-            return true;
         }
 
 
@@ -226,17 +235,21 @@ public class MainActivity extends AppCompatActivity
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-//                Toast.makeText(getApplicationContext(), loginSuccessful, Toast.LENGTH_LONG).show();
             }
-//            else {
-//                if(statusCode == HttpStatus.SC_NOT_ACCEPTABLE){
-//
-//                }
-//                else{
-//
-//                }
-//
-//            }
+            else {
+                livingRoom.setClickable(false);
+                livingRoom.setEnabled(false);
+                hallway.setClickable(false);
+                hallway.setEnabled(false);
+                kitchen.setClickable(false);
+                kitchen.setEnabled(false);
+                bathroom.setClickable(false);
+                bathroom.setEnabled(false);
+                bedroom.setClickable(false);
+                bedroom.setEnabled(false);
+                textViewError.setVisibility(View.VISIBLE);
+
+            }
         }
 
     }
