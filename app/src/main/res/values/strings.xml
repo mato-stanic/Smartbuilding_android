@@ -14,4 +14,17 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_main">Jednostavno upravljanje</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="kitchen">Kuhinja</string>
+    <string name="living_room">Dnevna soba</string>
+    <string name="bathroom">Kupaonica</string>
+    <string name="bedroom">Spavaća soba</string>
+    <string name="hallway">Hodnik</string>
+    <string name="preference_file_key">loggedInUser</string>
+    <string name="preferenceUserData">preferenceUserData</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_simple"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Jednostavno upravljanje stanom" />
+        <item
+            android:id="@+id/nav_advanced"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Napredno upravljanje stanom" />
+        <item
+            android:id="@+id/nav_cron_list"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Automatizirane akcije" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/logout"
+                android:title="Share" />
+        </menu>
+    </item>
+
+
+</menu>

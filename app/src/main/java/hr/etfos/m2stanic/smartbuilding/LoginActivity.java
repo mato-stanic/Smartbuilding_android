@@ -3,6 +3,9 @@ package hr.etfos.m2stanic.smartbuilding;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.AsyncTask;
@@ -48,45 +51,58 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
+    boolean loggedInUser;
+    private static final String PXS_RXS_UPDATE = "false";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        // Set up the login form.
-        mUsernameView = (EditText) findViewById(R.id.username);
-        mUsernameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
+
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        loggedInUser = (sharedPref.getBoolean(PXS_RXS_UPDATE, false));
+
+        if(loggedInUser){
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+        }
+        else{
+            setContentView(R.layout.activity_login);
+            // Set up the login form.
+            mUsernameView = (EditText) findViewById(R.id.username);
+            mUsernameView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                    if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                        attemptLogin();
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
+            mPasswordView = (EditText) findViewById(R.id.password);
+            mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                    if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                        attemptLogin();
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
 
-        Button signInButton = (Button) findViewById(R.id.email_sign_in_button);
-        signInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+            Button signInButton = (Button) findViewById(R.id.email_sign_in_button);
+            signInButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    attemptLogin();
+                }
+            });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+            mLoginFormView = findViewById(R.id.login_form);
+            mProgressView = findViewById(R.id.login_progress);
+        }
     }
 
     private void attemptLogin() {
@@ -203,6 +219,7 @@ public class LoginActivity extends AppCompatActivity {
             // TODO: attempt authentication against a network service.
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/login");
+//            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/login");
             try {
                 List<NameValuePair> postParameters = new ArrayList<>();
                 postParameters.add(new BasicNameValuePair("username", mUsername));
@@ -220,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
                 {
                     HttpEntity entity = response.getEntity();
                     InputStream is = entity.getContent();
-                    loginSuccessful = iStream_to_String(is);
+                    loginSuccessful = ParseResponse.iStream_to_String(is);
                 }
                 else{
                     return false;
@@ -243,7 +260,22 @@ public class LoginActivity extends AppCompatActivity {
 
             if (success) {
                 System.out.println(loginSuccessful);
-                Toast.makeText(getApplicationContext(), loginSuccessful, Toast.LENGTH_LONG).show();
+
+                boolean pxsRxsUpdate;
+                SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                pxsRxsUpdate = true;
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean(PXS_RXS_UPDATE, pxsRxsUpdate);
+                editor.commit();
+
+                SharedPreferences sharedPrefAptLayout = getSharedPreferences(getString(R.string.preferenceUserData), Context.MODE_PRIVATE);
+                editor = sharedPrefAptLayout.edit();
+                editor.putString("loggedInUser", loginSuccessful);
+                editor.commit();
+
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+//                Toast.makeText(getApplicationContext(), loginSuccessful, Toast.LENGTH_LONG).show();
             } else {
                 if(statusCode == HttpStatus.SC_NOT_ACCEPTABLE){
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -262,23 +294,6 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
             showProgress(false);
         }
-    }
-
-    public static String iStream_to_String(InputStream is1)
-    {
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is1), 4096);
-        String line;
-        StringBuilder sb =  new StringBuilder();
-        try {
-            while ((line = rd.readLine()) != null) {
-                sb.append(line);
-            }
-            rd.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
     }
 }
 
