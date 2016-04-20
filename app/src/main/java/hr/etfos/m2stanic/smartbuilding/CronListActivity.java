@@ -50,6 +50,8 @@ public class CronListActivity extends AppCompatActivity
     Context context;
     private TextView tvNoCrons;
 
+    private static final String PXS_RXS_UPDATE = "false";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +113,12 @@ public class CronListActivity extends AppCompatActivity
         } else if (id == R.id.nav_cron_list) {
             Intent intent = new Intent(getApplicationContext(), CronListActivity.class);
             startActivity(intent);
+        }else if (id == R.id.nav_logout){
+            SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+            sharedPref.edit().remove(PXS_RXS_UPDATE).apply();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

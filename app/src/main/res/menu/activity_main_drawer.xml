@@ -16,12 +16,12 @@
             android:title="Lista akcija" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="">
         <menu>
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/logout"
-                android:title="Share" />
+                android:title="Logout" />
         </menu>
     </item>
 
