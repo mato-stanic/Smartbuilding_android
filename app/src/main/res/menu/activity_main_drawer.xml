@@ -4,16 +4,16 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_simple"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/brightness_6"
             android:title="Jednostavno upravljanje stanom" />
         <item
             android:id="@+id/nav_advanced"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/clock_alert"
             android:title="Napredno upravljanje stanom" />
         <item
             android:id="@+id/nav_cron_list"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Automatizirane akcije" />
+            android:icon="@drawable/format_list_numbers"
+            android:title="Lista akcija" />
     </group>
 
     <item android:title="Communicate">

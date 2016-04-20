@@ -25,7 +25,7 @@
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner"
+        android:id="@+id/spRooms"
         android:layout_alignBottom="@+id/tvRoom"
         android:layout_marginLeft="40dp"
         android:layout_alignParentEnd="true"
@@ -74,7 +74,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/monday"
-        android:id="@+id/checkBox"
+        android:id="@+id/checkBox1"
         android:layout_alignTop="@+id/tvDays"
         android:layout_toStartOf="@+id/radioButton2" />
 
@@ -83,8 +83,8 @@
         android:layout_height="wrap_content"
         android:text="@string/tuesday"
         android:id="@+id/checkBox2"
-        android:layout_below="@+id/checkBox"
-        android:layout_alignStart="@+id/checkBox" />
+        android:layout_below="@+id/checkBox1"
+        android:layout_alignStart="@+id/checkBox1" />
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -107,7 +107,7 @@
         android:layout_height="wrap_content"
         android:text="@string/friday"
         android:id="@+id/checkBox5"
-        android:layout_alignTop="@+id/checkBox"
+        android:layout_alignTop="@+id/checkBox1"
         android:layout_alignEnd="@+id/radioButton2" />
 
     <CheckBox
@@ -166,6 +166,26 @@
         android:width="40dp"
         android:inputType="numberSigned"
         />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/btnSave"
+        android:layout_below="@+id/etHours"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp"
+        android:onClick="saveClick"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/current_time"
+        android:textSize="8dp"
+        android:id="@+id/btnCrnTime"
+        android:layout_alignTop="@+id/etMinutes"
+        android:layout_toEndOf="@+id/btnSave" />
 
 
 </RelativeLayout>

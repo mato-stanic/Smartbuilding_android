@@ -35,6 +35,7 @@
     <string name="day">Dan</string>
     <string name="time">Vrijeme</string>
     <string name="save">Spremi</string>
+    <string name="current_time">Trenutno vrijeme</string>
 
     <string-array name="rooms_array">
         <item>Dnevna soba</item>

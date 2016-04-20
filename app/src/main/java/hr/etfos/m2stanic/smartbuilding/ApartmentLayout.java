@@ -1,7 +1,6 @@
 package hr.etfos.m2stanic.smartbuilding;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -28,17 +27,27 @@ import java.util.List;
  */
 public class ApartmentLayout {
 
-    private ApartmentLayoutEdit apartmentLayoutEdit = null;
+    private ApartmentLayoutEditSimple apartmentLayoutEditSimple = null;
+    private ApartmentLayoutEditAdvanced apartmentLayoutEditAdvanced = null;
     public static void changeRoomState(Switch sw, Context context, Long apartmentId, String roomToChange, boolean state){
-        new ApartmentLayout().startAsyncTask(sw, context, apartmentId, roomToChange, state);
+        new ApartmentLayout().startSimpleAsyncTask(sw, context, apartmentId, roomToChange, state);
     }
 
-    public void startAsyncTask(Switch sw, Context context, Long apartmentId, String roomToChange, boolean state){
-        apartmentLayoutEdit = new ApartmentLayoutEdit(sw, context, apartmentId, roomToChange, state);
-        apartmentLayoutEdit.execute((Void) null);
+    public void startSimpleAsyncTask(Switch sw, Context context, Long apartmentId, String roomToChange, boolean state){
+        apartmentLayoutEditSimple = new ApartmentLayoutEditSimple(sw, context, apartmentId, roomToChange, state);
+        apartmentLayoutEditSimple.execute((Void) null);
     }
 
-    public class ApartmentLayoutEdit extends AsyncTask<Void, Void, Boolean> {
+    public static void advancedLayout(Context context, List<String> days, Long apartmentId, String roomToChange, String action, String time){
+        new ApartmentLayout().startAdvancedAsyncTask(context, days, apartmentId, roomToChange, action, time);
+    }
+
+    public void startAdvancedAsyncTask(Context context, List<String> days, Long apartmentId, String roomToChange, String action, String time){
+        apartmentLayoutEditAdvanced = new ApartmentLayoutEditAdvanced(context, days, apartmentId, roomToChange, action, time);
+        apartmentLayoutEditAdvanced.execute((Void) null);
+    }
+
+    public class ApartmentLayoutEditSimple extends AsyncTask<Void, Void, Boolean> {
 
         private final Long apartmentId;
         private final String roomToChange;
@@ -48,7 +57,7 @@ public class ApartmentLayout {
         private String apartmentLayout;
         private Integer statusCode;
 
-        ApartmentLayoutEdit(Switch sw, Context context, Long apartmentId, String roomToChange, Boolean state) {
+        ApartmentLayoutEditSimple(Switch sw, Context context, Long apartmentId, String roomToChange, Boolean state) {
             this.sw = sw;
             this.context = context;
             this.apartmentId = apartmentId;
@@ -61,8 +70,8 @@ public class ApartmentLayout {
             // TODO: attempt authentication against a network service.
 
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout/edit");
-//            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/apartmentLayout/edit");
+            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout/editSimple");
+//            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/apartmentLayout/editSimple");
             try {
                 List<NameValuePair> postParameters = new ArrayList<>();
                 postParameters.add(new BasicNameValuePair("apartmentId", String.valueOf(apartmentId)));
@@ -113,6 +122,92 @@ public class ApartmentLayout {
 //                Intent intent = new Intent(context, SimpleLayoutActivity.class);
 //                context.startActivity(intent);
 
+            }
+        }
+
+    }
+
+
+    public class ApartmentLayoutEditAdvanced extends AsyncTask<Void, Void, Boolean> {
+
+        private final Context context;
+        private final List<String> days;
+        private final Long apartmentId;
+        private final String roomToChange;
+        private final String action;
+        private final String time;
+        private String apartmentCronJob;
+        private Integer statusCode;
+
+        ApartmentLayoutEditAdvanced(Context context, List<String> days, Long apartmentId, String roomToChange, String action, String time) {
+            this.context = context;
+            this.days = days;
+            this.apartmentId = apartmentId;
+            this.roomToChange = roomToChange;
+            this.action = action;
+            this.time = time;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout/editAdvanced");
+//            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/apartmentLayout/editAdvanced");
+            try {
+                List<NameValuePair> postParameters = new ArrayList<>();
+                postParameters.add(new BasicNameValuePair("apartmentId", String.valueOf(apartmentId)));
+                postParameters.add(new BasicNameValuePair("roomToChange", roomToChange));
+                postParameters.add(new BasicNameValuePair("action", action));
+                for (String day : days) {
+                    postParameters.add(new BasicNameValuePair("days", day));
+                }
+                postParameters.add(new BasicNameValuePair("time", time));
+
+                httppost.setEntity(new UrlEncodedFormEntity(postParameters));
+
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httppost);
+                statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == HttpStatus.SC_OK)
+                {
+                    HttpEntity entity = response.getEntity();
+                    InputStream is = entity.getContent();
+                    apartmentCronJob = ParseResponse.iStream_to_String(is);
+
+                }
+                else{
+                    return false;
+                }
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return false;
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
+            if (success) {
+                System.out.println("cron job: " + apartmentCronJob);
+                Toast.makeText(context, "Uspješno dodan automatski zadatak", Toast.LENGTH_LONG).show();
+            }
+            else {
+                if(statusCode == HttpStatus.SC_BAD_REQUEST)
+                    Toast.makeText(context, "Nažalost dogodila se greška", Toast.LENGTH_LONG).show();
+                else{
+                    Toast.makeText(context, "Automatski zadatak već postoji", Toast.LENGTH_LONG).show();
+                }
             }
         }
 
