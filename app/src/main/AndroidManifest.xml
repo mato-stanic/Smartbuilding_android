@@ -30,6 +30,10 @@
         <activity
             android:name=".AdvancedLayoutActivity"
             android:label="@string/title_activity_advanced_layout"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CronListActivity"
+            android:label="@string/title_activity_cron_list"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -111,7 +111,8 @@ public class SimpleLayoutActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), AdvancedLayoutActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_cron_list) {
-
+            Intent intent = new Intent(getApplicationContext(), CronListActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
