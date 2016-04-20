@@ -1,6 +1,7 @@
 package hr.etfos.m2stanic.smartbuilding;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -25,12 +26,14 @@ import java.util.List;
 /**
  * Created by mato on 19.04.16..
  */
-public class ApartmentLayout {
+public class ApartmentManager {
 
     private ApartmentLayoutEditSimple apartmentLayoutEditSimple = null;
     private ApartmentLayoutEditAdvanced apartmentLayoutEditAdvanced = null;
+    private ApartmentDeleteCron apartmentDeleteCron = null;
+
     public static void changeRoomState(Switch sw, Context context, Long apartmentId, String roomToChange, boolean state){
-        new ApartmentLayout().startSimpleAsyncTask(sw, context, apartmentId, roomToChange, state);
+        new ApartmentManager().startSimpleAsyncTask(sw, context, apartmentId, roomToChange, state);
     }
 
     public void startSimpleAsyncTask(Switch sw, Context context, Long apartmentId, String roomToChange, boolean state){
@@ -39,12 +42,21 @@ public class ApartmentLayout {
     }
 
     public static void advancedLayout(Context context, List<String> days, Long apartmentId, String roomToChange, String action, String time){
-        new ApartmentLayout().startAdvancedAsyncTask(context, days, apartmentId, roomToChange, action, time);
+        new ApartmentManager().startAdvancedAsyncTask(context, days, apartmentId, roomToChange, action, time);
     }
 
     public void startAdvancedAsyncTask(Context context, List<String> days, Long apartmentId, String roomToChange, String action, String time){
         apartmentLayoutEditAdvanced = new ApartmentLayoutEditAdvanced(context, days, apartmentId, roomToChange, action, time);
         apartmentLayoutEditAdvanced.execute((Void) null);
+    }
+
+    public static void deleteCron(Context context, Long cronJobId){
+        new ApartmentManager().startDeleteCronAsyncTask(context, cronJobId);
+    }
+
+    public void startDeleteCronAsyncTask(Context context, Long cronJobId){
+        apartmentDeleteCron = new ApartmentDeleteCron(context, cronJobId);
+        apartmentDeleteCron.execute((Void) null);
     }
 
     public class ApartmentLayoutEditSimple extends AsyncTask<Void, Void, Boolean> {
@@ -203,7 +215,76 @@ public class ApartmentLayout {
                 Toast.makeText(context, "Uspješno dodan automatski zadatak", Toast.LENGTH_LONG).show();
             }
             else {
-                if(statusCode == HttpStatus.SC_BAD_REQUEST)
+                if(statusCode == null)
+                    Toast.makeText(context, "Nažalost dogodila se greška", Toast.LENGTH_LONG).show();
+                else{
+                    Toast.makeText(context, "Automatski zadatak već postoji", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+
+    }
+
+
+    public class ApartmentDeleteCron extends AsyncTask<Void, Void, Boolean> {
+
+        private final Context context;
+        private final Long cronId;
+        private Integer statusCode;
+
+        ApartmentDeleteCron(Context context, Long cronId) {
+            this.context = context;
+            this.cronId = cronId;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout/deleteCron");
+//            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/apartmentLayout/deleteCron");
+            try {
+                List<NameValuePair> postParameters = new ArrayList<>();
+                postParameters.add(new BasicNameValuePair("cronJobId", String.valueOf(cronId)));
+                httppost.setEntity(new UrlEncodedFormEntity(postParameters));
+
+                // Execute HTTP Post Request
+                HttpResponse response = httpclient.execute(httppost);
+                statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == HttpStatus.SC_OK)
+                {
+                    return true;
+
+                }
+                else{
+                    return false;
+                }
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return false;
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+//            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
+            if (success) {
+                Toast.makeText(context, "Uspješno obrisan automatski zadatak", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(context, CronListActivity.class);
+                context.startActivity(intent);
+            }
+            else {
+                if(statusCode == null)
                     Toast.makeText(context, "Nažalost dogodila se greška", Toast.LENGTH_LONG).show();
                 else{
                     Toast.makeText(context, "Automatski zadatak već postoji", Toast.LENGTH_LONG).show();

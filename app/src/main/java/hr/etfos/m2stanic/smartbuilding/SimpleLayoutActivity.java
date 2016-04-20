@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -124,11 +122,11 @@ public class SimpleLayoutActivity extends AppCompatActivity
         int id = v.getId();
         Switch sw = (Switch) findViewById(id);
         switch (id){
-            case R.id.switch1: ApartmentLayout.changeRoomState(sw, getApplicationContext(), apartmentId, "living_room", sw.isChecked());break;
-            case R.id.switch2: ApartmentLayout.changeRoomState(sw, getApplicationContext(), apartmentId, "kitchen", sw.isChecked());break;
-            case R.id.switch3: ApartmentLayout.changeRoomState(sw, getApplicationContext(), apartmentId, "bathroom", sw.isChecked());break;
-            case R.id.switch4: ApartmentLayout.changeRoomState(sw, getApplicationContext(), apartmentId, "bedroom", sw.isChecked());break;
-            case R.id.switch5: ApartmentLayout.changeRoomState(sw, getApplicationContext(), apartmentId, "hallway", sw.isChecked());break;
+            case R.id.switch1: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "living_room", sw.isChecked());break;
+            case R.id.switch2: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "kitchen", sw.isChecked());break;
+            case R.id.switch3: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "bathroom", sw.isChecked());break;
+            case R.id.switch4: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "bedroom", sw.isChecked());break;
+            case R.id.switch5: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "hallway", sw.isChecked());break;
         }
     }
 

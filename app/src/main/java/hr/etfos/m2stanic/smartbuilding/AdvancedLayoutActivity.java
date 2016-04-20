@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -140,7 +138,7 @@ public class AdvancedLayoutActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 Date curDate = new Date();
-                SimpleDateFormat format = new SimpleDateFormat("hh");
+                SimpleDateFormat format = new SimpleDateFormat("HH");
                 String hours = format.format(curDate);
                 etHours.setText(hours);
 
@@ -243,7 +241,7 @@ public class AdvancedLayoutActivity extends AppCompatActivity
         }
         else{
             String time = etHours.getText() + ":" + etMinutes.getText();
-            ApartmentLayout.advancedLayout(getApplicationContext(), days, apartmentId, room, action, time);
+            ApartmentManager.advancedLayout(getApplicationContext(), days, apartmentId, room, action, time);
         }
     }
 

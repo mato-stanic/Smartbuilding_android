@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/tvRoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:text="@string/room"
+        android:layout_marginRight="5dp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/tvRoomValues"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:text="room values"
+        android:layout_toRightOf="@+id/tvRoom"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvTime"
+        android:textSize="15dp"
+        android:layout_below="@+id/tvRoom"
+        android:text="@string/time"
+        android:layout_marginRight="5dp"
+        android:textStyle="bold"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvTimeValue"
+        android:textSize="15dp"
+        android:layout_below="@+id/tvRoom"
+        android:text="vrijeme values"
+        android:layout_toRightOf="@+id/tvTime"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvAction"
+        android:textSize="15dp"
+        android:layout_below="@+id/tvTime"
+        android:text="@string/action"
+        android:layout_marginRight="5dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvActionValue"
+        android:textSize="15dp"
+        android:layout_below="@+id/tvTime"
+        android:text="action values"
+        android:layout_toRightOf="@+id/tvAction"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvDays"
+        android:textSize="15dp"
+        android:layout_below="@+id/tvAction"
+        android:text="@string/day"
+        android:layout_marginRight="5dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvDaysValues"
+        android:textSize="15dp"
+        android:text="days values"
+        android:layout_below="@+id/tvAction"
+        android:layout_toRightOf="@+id/tvDays"/>
+
+</RelativeLayout>

@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +42,13 @@ import java.util.List;
 
 public class CronListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ApartmentCronInitTask apartmentCronInitTask = null;
+    private Long apartmentId;
+    private ListView lvCrons;
+    ListCronsAdapter listCronsAdapter;
+    Context context;
+    private TextView tvNoCrons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +68,14 @@ public class CronListActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
+        context = this;
+        tvNoCrons = (TextView) findViewById(R.id.tvNoCrons);
+        tvNoCrons.setVisibility(View.GONE);
+
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferenceUserData), Context.MODE_PRIVATE);
         String loggedInUser = sharedPref.getString("loggedInUser", "noData");
-//        aptLayoutInitTask = new ApartmentLayoutInitTask(loggedInUser);
-//        aptLayoutInitTask.execute((Void) null);
+        apartmentCronInitTask = new ApartmentCronInitTask(loggedInUser, this);
+        apartmentCronInitTask.execute((Void) null);
     }
 
     @Override
@@ -104,5 +117,166 @@ public class CronListActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public class ApartmentCronInitTask extends  AsyncTask<Void, Void, Boolean>{
+
+        private final String loggedInUser;
+        private final Context context;
+        private String apartmentCrons;
+        private Integer statusCode;
+
+        ApartmentCronInitTask(String loggedInUser, Context context){
+            this.loggedInUser = loggedInUser;
+            this.context = context;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            JSONObject completeData = null;
+            try {
+                completeData = new JSONObject(loggedInUser);
+                JSONObject apartmentData = completeData.getJSONObject("apartment");
+                apartmentId = apartmentData.getLong("id");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return false;
+            }
+
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout/cronList");
+//            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/apartmentLayout/cronList");
+            try {
+                List<NameValuePair> postParameters = new ArrayList<>();
+                postParameters.add(new BasicNameValuePair("apartmentId", String.valueOf(apartmentId)));
+
+
+                httppost.setEntity(new UrlEncodedFormEntity(postParameters));
+
+                // Execute HTTP Post Request
+
+                HttpResponse response = httpclient.execute(httppost);
+                statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == HttpStatus.SC_OK)
+                {
+                    HttpEntity entity = response.getEntity();
+                    InputStream is = entity.getContent();
+                    apartmentCrons = ParseResponse.iStream_to_String(is);
+                    return true;
+                }
+                else{
+                    return false;
+                }
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return false;
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+
+            if (success) {
+                List<ApartmentCronJob> cronList = new ArrayList<>();
+                try {
+                    JSONArray jsonarray = new JSONArray(apartmentCrons);
+                    for (int i = 0; i < jsonarray.length(); i++) {
+                        JSONObject jsonobject = jsonarray.getJSONObject(i);
+                        ApartmentCronJob acj = new ApartmentCronJob();
+
+                        Long id = jsonobject.getLong("id");
+                        acj.setId(id);
+
+                        String time = jsonobject.getString("time");
+                        acj.setTime(time);
+
+                        String action = jsonobject.getString("action");
+                        if(action.equals("turnOn"))
+                            acj.setAction("Upali");
+                        else
+                            acj.setAction("Ugasi");
+
+                        String room = jsonobject.getString("room");
+                        switch (room) {
+                            case "livingroom":
+                                acj.setRoom("Dnevna soba");
+                                break;
+                            case "kitchen":
+                                acj.setRoom("Kuhinja");
+                                break;
+                            case "bathroom":
+                                acj.setRoom("Kupaonica");
+                                break;
+                            case "bedroom":
+                                acj.setRoom("Spavaća soba");
+                                break;
+                            case "hallway":
+                                acj.setRoom("Hodnik");
+                                break;
+                        }
+
+                        JSONArray listOfDays = jsonobject.getJSONArray("days");
+                        List<String> correctedDays = new ArrayList<>();
+                        for (int j = 0; j < listOfDays.length(); j++) {
+                            String day = listOfDays.getString(j);
+                            switch (day) {
+                                case "monday":
+                                    correctedDays.add("Ponedjeljak");
+                                    break;
+                                case "tuesday":
+                                    correctedDays.add("Utorak");
+                                    break;
+                                case "wednesday":
+                                    correctedDays.add("Srijeda");
+                                    break;
+                                case "thursday":
+                                    correctedDays.add("Četvrtak");
+                                    break;
+                                case "friday":
+                                    correctedDays.add("Petak");
+                                    break;
+                                case "saturday":
+                                    correctedDays.add("Subota");
+                                    break;
+                                case "sunday":
+                                    correctedDays.add("Nedjelja");
+                                    break;
+                            }
+                        }
+                        acj.setDays(correctedDays);
+
+                        cronList.add(acj);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                lvCrons = (ListView) findViewById(R.id.listView);
+                listCronsAdapter = new ListCronsAdapter((CronListActivity) context, cronList);
+                lvCrons.setAdapter(listCronsAdapter);
+            }
+            else {
+                if(statusCode != null && statusCode == HttpStatus.SC_NOT_FOUND) {
+                    tvNoCrons.setText(getResources().getString(R.string.error_nocrons));
+                    tvNoCrons.setVisibility(View.VISIBLE);
+                }
+                else{
+                    tvNoCrons.setText(getResources().getString(R.string.error));
+                    tvNoCrons.setVisibility(View.VISIBLE);
+                }
+
+            }
+        }
+    }
+
 
 }
