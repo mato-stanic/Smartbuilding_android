@@ -215,8 +215,8 @@ public class LoginActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/login");
-//            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/login");
+//            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/login");
+            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/login");
             try {
                 List<NameValuePair> postParameters = new ArrayList<>();
                 postParameters.add(new BasicNameValuePair("username", mUsername));
