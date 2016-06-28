@@ -10,7 +10,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".SimpleLayoutActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:showIn="@layout/app_bar_main"
+    android:id="@+id/simpleEditRelLayout">
 
 
     <Switch
@@ -21,7 +22,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="40dp"
-        android:onClick="switchClick"/>
+        />
 
     <Switch
         android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
         android:layout_below="@+id/switch1"
         android:layout_alignParentStart="true"
         android:layout_marginTop="40dp"
-        android:onClick="switchClick"/>
+        />
 
     <Switch
         android:layout_width="wrap_content"
@@ -41,7 +42,7 @@
         android:layout_below="@+id/switch2"
         android:layout_alignParentStart="true"
         android:layout_marginTop="40dp"
-        android:onClick="switchClick"/>
+        />
 
     <Switch
         android:layout_width="wrap_content"
@@ -51,7 +52,7 @@
         android:layout_below="@+id/switch3"
         android:layout_alignParentStart="true"
         android:layout_marginTop="40dp"
-        android:onClick="switchClick"/>
+        />
 
     <Switch
         android:layout_width="wrap_content"
@@ -61,7 +62,7 @@
         android:layout_below="@+id/switch4"
         android:layout_alignParentStart="true"
         android:layout_marginTop="40dp"
-        android:onClick="switchClick"/>
+        />
 
     <TextView
         android:layout_width="wrap_content"

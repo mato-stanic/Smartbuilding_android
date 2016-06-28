@@ -1,10 +1,16 @@
 package hr.etfos.m2stanic.smartbuilding;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -35,6 +42,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import hr.etfos.m2stanic.smartbuilding.Extra.Config;
 
 public class SimpleLayoutActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -71,12 +80,19 @@ public class SimpleLayoutActivity extends AppCompatActivity
         bathroom = (Switch) findViewById(R.id.switch3);
         bedroom = (Switch) findViewById(R.id.switch4);
         hallway = (Switch) findViewById(R.id.switch5);
+
+        livingRoom.setOnClickListener(clicks);
+        kitchen.setOnClickListener(clicks);
+        bathroom.setOnClickListener(clicks);
+        bedroom.setOnClickListener(clicks);
+        hallway.setOnClickListener(clicks);
+
         textViewError = (TextView) findViewById(R.id.textViewError);
         textViewError.setVisibility(View.GONE);
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferenceUserData), Context.MODE_PRIVATE);
         String loggedInUser = sharedPref.getString("loggedInUser", "noData");
-        aptLayoutInitTask = new ApartmentLayoutInitTask(loggedInUser);
+        aptLayoutInitTask = new ApartmentLayoutInitTask(loggedInUser, getApplicationContext());
         aptLayoutInitTask.execute((Void) null);
     }
 
@@ -126,26 +142,68 @@ public class SimpleLayoutActivity extends AppCompatActivity
         return true;
     }
 
-    public void switchClick(View v) {
-        int id = v.getId();
-        Switch sw = (Switch) findViewById(id);
-        switch (id){
-            case R.id.switch1: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "living_room", sw.isChecked());break;
-            case R.id.switch2: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "kitchen", sw.isChecked());break;
-            case R.id.switch3: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "bathroom", sw.isChecked());break;
-            case R.id.switch4: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "bedroom", sw.isChecked());break;
-            case R.id.switch5: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "hallway", sw.isChecked());break;
+//    public void switchClick(View v) {
+//        int id = v.getId();
+//        Switch sw = (Switch) findViewById(id);
+//        switch (id){
+//            case R.id.switch1: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "living_room", sw.isChecked());break;
+//            case R.id.switch2: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "kitchen", sw.isChecked());break;
+//            case R.id.switch3: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "bathroom", sw.isChecked());break;
+//            case R.id.switch4: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "bedroom", sw.isChecked());break;
+//            case R.id.switch5: ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "hallway", sw.isChecked());break;
+//        }
+//    }
+
+    View.OnClickListener clicks = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            int id = v.getId();
+            Switch sw = (Switch) findViewById(id);
+            switch (id) {
+                case R.id.switch1:
+                    ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "living_room", sw.isChecked());
+                    break;
+                case R.id.switch2:
+                    ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "kitchen", sw.isChecked());
+                    break;
+                case R.id.switch3:
+                    ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "bathroom", sw.isChecked());
+                    break;
+                case R.id.switch4:
+                    ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "bedroom", sw.isChecked());
+                    break;
+                case R.id.switch5:
+                    ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "hallway", sw.isChecked());
+                    break;
+                case 6:
+                    int thumbColor;
+                    if(sw.isChecked()){
+                        thumbColor = Color.argb(255, 45, 73, 77);
+                        sw.setChecked(true);
+                    }
+                    else{
+                        thumbColor = Color.argb(255, 236, 236, 236);
+                        sw.setChecked(false);
+                    }
+                    sw.getThumbDrawable().setColorFilter(thumbColor, PorterDuff.Mode.MULTIPLY);
+                    ApartmentManager.changeRoomState(sw, getApplicationContext(), apartmentId, "motionDetection", sw.isChecked());
+                    break;
+            }
+
         }
-    }
+    };
 
     public class ApartmentLayoutInitTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String loggedInUser;
+        private final Context context;
         private String apartmentLayout;
         private Integer statusCode;
 
-        ApartmentLayoutInitTask(String loggedInUser) {
+        ApartmentLayoutInitTask(String loggedInUser, Context context) {
             this.loggedInUser = loggedInUser;
+            this.context = context;
         }
 
         @Override
@@ -163,8 +221,12 @@ public class SimpleLayoutActivity extends AppCompatActivity
                 return false;
             }
             HttpClient httpclient = new DefaultHttpClient();
-//            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout");
-            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/apartmentLayout");
+            HttpPost httppost;
+            if(Config.productionDeploy){
+                httppost = new HttpPost(Config.prodApiApartmentLayout);
+            }else{
+                httppost = new HttpPost(Config.apiApartmentLayout);
+            }
             try {
                 List<NameValuePair> postParameters = new ArrayList<>();
                 postParameters.add(new BasicNameValuePair("apartmentId", String.valueOf(apartmentId)));
@@ -212,6 +274,45 @@ public class SimpleLayoutActivity extends AppCompatActivity
                     kitchen.setChecked(completeData.getBoolean("kitchen"));
                     bathroom.setChecked(completeData.getBoolean("bathroom"));
                     bedroom.setChecked(completeData.getBoolean("bedroom"));
+
+                    boolean motionDetectionEnabled = completeData.getBoolean("motionDetectionEnabled");
+                    if (motionDetectionEnabled){
+                        RelativeLayout layout = (RelativeLayout) findViewById(R.id.simpleEditRelLayout);
+
+                        Switch sw = new Switch(context);
+
+                        sw.setId(Integer.valueOf(6));
+                        sw.setText("Detektiranje pokreta");
+
+                        //stuff for layout params
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                                RelativeLayout.LayoutParams.WRAP_CONTENT
+                        );
+                        params.setMargins(0,100,0,0);
+                        params.addRule(RelativeLayout.ALIGN_PARENT_START);
+                        params.addRule(RelativeLayout.BELOW, R.id.switch5);
+                        sw.setLayoutParams(params);
+                        sw.setOnClickListener(clicks);
+                        sw.setTextColor(Color.parseColor("black"));
+
+                        boolean motionDetection = completeData.getBoolean("motionDetection");
+                        int trackColor = Color.argb(255, 0, 0, 0);
+                        int thumbColor;
+                        if(motionDetection){
+                            thumbColor = Color.argb(255, 45, 73, 77);
+                            sw.setChecked(true);
+                        }
+                        else{
+                            thumbColor = Color.argb(255, 236, 236, 236);
+                            sw.setChecked(false);
+                        }
+
+                        sw.getThumbDrawable().setColorFilter(thumbColor, PorterDuff.Mode.MULTIPLY);
+                        sw.getTrackDrawable().setColorFilter(trackColor, PorterDuff.Mode.MULTIPLY);
+                        layout.addView(sw);
+                    }
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();

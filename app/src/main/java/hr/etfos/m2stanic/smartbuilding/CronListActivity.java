@@ -40,6 +40,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import hr.etfos.m2stanic.smartbuilding.Extra.Config;
+
 public class CronListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -153,8 +155,12 @@ public class CronListActivity extends AppCompatActivity
 
 
             HttpClient httpclient = new DefaultHttpClient();
-//            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout/cronList");
-            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/apartmentLayout/cronList");
+            HttpPost httppost;
+            if(Config.productionDeploy){
+                httppost = new HttpPost(Config.prodApiCronList);
+            }else{
+                httppost = new HttpPost(Config.apiCronList);
+            }
             try {
                 List<NameValuePair> postParameters = new ArrayList<>();
                 postParameters.add(new BasicNameValuePair("apartmentId", String.valueOf(apartmentId)));

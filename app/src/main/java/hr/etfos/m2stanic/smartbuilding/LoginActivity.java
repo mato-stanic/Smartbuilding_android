@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +38,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import hr.etfos.m2stanic.smartbuilding.Extra.Config;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -215,8 +218,12 @@ public class LoginActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
             HttpClient httpclient = new DefaultHttpClient();
-//            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/login");
-            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/login");
+            HttpPost httppost;
+            if(Config.productionDeploy){
+                httppost = new HttpPost(Config.prodApiLogin);
+            }else{
+                httppost = new HttpPost(Config.apiLogin);
+            }
             try {
                 List<NameValuePair> postParameters = new ArrayList<>();
                 postParameters.add(new BasicNameValuePair("username", mUsername));
@@ -275,12 +282,8 @@ public class LoginActivity extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(), loginSuccessful, Toast.LENGTH_LONG).show();
             } else {
                 if(statusCode == HttpStatus.SC_NOT_ACCEPTABLE){
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.setError(getString(R.string.error_incorrect_login));
                     mPasswordView.requestFocus();
-                }
-                else{
-                    mUsernameView.setError(getString(R.string.error_incorrect_username));
-                    mUsernameView.requestFocus();
                 }
 
             }

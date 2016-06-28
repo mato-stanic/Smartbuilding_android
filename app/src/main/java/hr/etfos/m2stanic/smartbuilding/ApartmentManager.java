@@ -23,6 +23,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import hr.etfos.m2stanic.smartbuilding.Extra.Config;
+
 /**
  * Created by mato on 19.04.16..
  */
@@ -82,8 +84,12 @@ public class ApartmentManager {
             // TODO: attempt authentication against a network service.
 
             HttpClient httpclient = new DefaultHttpClient();
-//            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout/editSimple");
-            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/apartmentLayout/editSimple");
+            HttpPost httppost;
+            if(Config.productionDeploy){
+                httppost = new HttpPost(Config.prodApiEditSimple);
+            }else{
+                httppost = new HttpPost(Config.apiEditSimple);
+            }
             try {
                 List<NameValuePair> postParameters = new ArrayList<>();
                 postParameters.add(new BasicNameValuePair("apartmentId", String.valueOf(apartmentId)));
@@ -165,8 +171,12 @@ public class ApartmentManager {
             // TODO: attempt authentication against a network service.
 
             HttpClient httpclient = new DefaultHttpClient();
-//            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout/editAdvanced");
-            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/apartmentLayout/editAdvanced");
+            HttpPost httppost;
+            if(Config.productionDeploy){
+                httppost = new HttpPost(Config.prodApiEditAdvanced);
+            }else{
+                httppost = new HttpPost(Config.apiEditAdvanced);
+            }
             try {
                 List<NameValuePair> postParameters = new ArrayList<>();
                 postParameters.add(new BasicNameValuePair("apartmentId", String.valueOf(apartmentId)));
@@ -242,8 +252,14 @@ public class ApartmentManager {
             // TODO: attempt authentication against a network service.
 
             HttpClient httpclient = new DefaultHttpClient();
-//            HttpPost httppost = new HttpPost("http://192.168.178.33:8080/smartbuilding/android/admin/apartmentLayout/deleteCron");
-            HttpPost httppost = new HttpPost("http://89.107.57.144:8080/smartbuilding/android/admin/apartmentLayout/deleteCron");
+            HttpPost httppost;
+            if(Config.productionDeploy)
+            {
+                httppost = new HttpPost(Config.prodApiDeleteCron);
+            }
+            else{
+                httppost = new HttpPost(Config.apiDeleteCron);
+            }
             try {
                 List<NameValuePair> postParameters = new ArrayList<>();
                 postParameters.add(new BasicNameValuePair("cronJobId", String.valueOf(cronId)));
